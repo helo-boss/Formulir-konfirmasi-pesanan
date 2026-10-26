@@ -16,7 +16,7 @@
             color: #333;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
         }
         .app-container {
@@ -33,7 +33,7 @@
         }
         .app-header {
             background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-            padding: 18px 16px 16px;
+            padding: 11px 14px 10px;
             text-align: center;
             border-bottom: 1px solid #dfe5eb;
             box-shadow: 0 2px 8px rgba(31, 45, 61, 0.04);
@@ -42,7 +42,7 @@
             z-index: 100;
         }
         .app-header h2 {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             color: #1f2937;
             letter-spacing: -0.2px;
@@ -65,18 +65,18 @@
             }
         }
         .app-content {
-            padding: 20px 16px;
+            padding: 14px 12px 104px;
             flex: 1;
         }
         .form-section {
             background: #fdfdfd;
             border: 1px solid #f0f0f0;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 20px;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
         }
         .section-title {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 700;
             color: #777;
             text-transform: uppercase;
@@ -84,14 +84,14 @@
             margin-bottom: 14px;
         }
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
         .form-group:last-child {
             margin-bottom: 0;
         }
         label {
             display: block;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: #444;
             margin-bottom: 6px;
@@ -544,12 +544,16 @@
             margin-top: 3px;
         }
         .app-footer {
-            position: relative;
-            width: 100%;
+            position: fixed;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: min(100%, 430px);
             background: rgba(255, 255, 255, 0.98);
-            padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+            padding: 9px 12px calc(9px + env(safe-area-inset-bottom));
             border-top: 1px solid #eaeaea;
-            box-shadow: 0 -5px 18px rgba(0,0,0,0.04);
+            box-shadow: 0 -5px 18px rgba(0,0,0,0.08);
+            z-index: 200;
         }
         .app-footer .checkbox-container {
             margin: 0 0 12px;
@@ -594,7 +598,7 @@
         @media (prefers-reduced-motion: reduce) { .email-modal { animation:none; } }
         .btn-submit {
             width: 100%;
-            padding: 14px;
+            padding: 11px;
             background: #007aff;
             color: white;
             border: none;
