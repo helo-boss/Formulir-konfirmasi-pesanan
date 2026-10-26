@@ -33,28 +33,48 @@ const server = http.createServer(async (req, res) => {
       }
 
       const fields = [
-        ['Nama', data.nama],
+        ['ID Produk / Resi', data.id_produk],
+        ['Nama Produk', data.nama_produk],
+        ['Harga Produk', data.harga_produk],
+        ['Nama Pemesan', data.nama],
         ['Nomor Pesanan', data.nomor_pesanan],
         ['Status Pesanan', data.cod_status],
+        ['Keterangan Status', data.cod_status_detail],
         ['Kurir', data.selected_kurir],
         ['Metode Pembayaran', data.metode_pembayaran],
         ['Link Virtual Account', data.ewallet_link],
         ['COD Cek Dulu', data.cod_consent ? 'Disetujui' : 'Tidak disetujui'],
+        ['Persetujuan Transaksi', data.setuju_transaksi ? 'Disetujui' : 'Tidak disetujui'],
         ['Catatan', data.catatan],
         ['Email', data.customer_email],
         ['File Bukti Transfer', data.bukti_tf_nama],
+        ['Tipe File', data.bukti_tf_tipe],
+        ['Ukuran File', data.bukti_tf_ukuran],
       ].filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== '')
 
-      const text = ['Konfirmasi Pesanan Baru', '', ...fields.map(([label, value]) => `${label}: ${String(value).trim()}`)].join('\n')
-      const telegramResponse = await fetch(`https://api.telegram.org/bot${encodeURIComponent(token)}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: chatId, text }),
-      })
-      const telegramResult = await telegramResponse.json().catch(() => ({}))
-      if (!telegramResponse.ok || !telegramResult.ok) {
-        const description = telegramResult.description || 'Telegram menolak pesan'
-        throw new Error(description)
+      const lines = ['Konfirmasi Pesanan Baru', '', ...fields.map(([label, value]) => `${label}: ${String(value).trim()}`)]
+      const chunks = []
+      for (let i = 0; i < lines.length;) {
+        let chunk = lines[i]
+        i += 1
+        while (i < lines.length && `${chunk}\n${lines[i]}`.length <= 3900) {
+          chunk += `\n${lines[i]}`
+          i += 1
+        }
+        chunks.push(chunk)
+      }
+
+      for (const text of chunks) {
+        const telegramResponse = await fetch(`https://api.telegram.org/bot${encodeURIComponent(token)}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: chatId, text }),
+        })
+        const telegramResult = await telegramResponse.json().catch(() => ({}))
+        if (!telegramResponse.ok || !telegramResult.ok) {
+          const description = telegramResult.description || 'Telegram menolak pesan'
+          throw new Error(description)
+        }
       }
       return sendJson(res, 200, { ok: true })
     } catch (error) {
