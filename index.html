@@ -137,22 +137,32 @@
             pointer-events: none;
         }
         .status-select {
+            display: block;
             width: 100%;
+            height: 48px;
             min-height: 48px;
             appearance: none;
-            padding: 12px 42px 12px 14px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding: 0 42px 0 14px;
             border: 1px solid #bfdbfe;
             border-radius: 10px;
             background: #fff;
             color: #1f2937;
-            font-size: 13px;
-            font-weight: 600;
+            font: 600 13px/48px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             cursor: pointer;
             outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .status-select:hover {
+            border-color: #93c5fd;
         }
         .status-select:focus {
             border-color: #007aff;
             box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.12);
+        }
+        .status-select::-ms-expand {
+            display: none;
         }
         .status-help {
             margin-top: 9px;
