@@ -137,23 +137,114 @@
             pointer-events: none;
         }
         .status-select {
+            display: block;
             width: 100%;
+            height: 48px;
             min-height: 48px;
             appearance: none;
-            padding: 12px 42px 12px 14px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding: 0 42px 0 14px;
             border: 1px solid #bfdbfe;
             border-radius: 10px;
             background: #fff;
             color: #1f2937;
-            font-size: 13px;
-            font-weight: 600;
+            font: 600 13px/48px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             cursor: pointer;
             outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .status-select:hover {
+            border-color: #93c5fd;
         }
         .status-select:focus {
             border-color: #007aff;
             box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.12);
         }
+        .status-select::-ms-expand {
+            display: none;
+        }
+        .status-select-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .status-dropdown {
+            position: relative;
+        }
+        .status-dropdown-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            min-height: 48px;
+            padding: 8px 14px;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            background: #fff;
+            color: #1f2937;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+        .status-dropdown-trigger:focus {
+            outline: none;
+            border-color: #007aff;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.12);
+        }
+        .status-dropdown-trigger::after {
+            content: "⌄";
+            color: #007aff;
+            font-size: 20px;
+            line-height: 1;
+        }
+        .status-current {
+            display: grid;
+            gap: 2px;
+        }
+        .status-current strong,
+        .status-option strong {
+            font-size: 13px;
+            line-height: 1.25;
+        }
+        .status-current small,
+        .status-option small {
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.35;
+            font-weight: 400;
+        }
+        .status-current.placeholder { color: #64748b; font-weight: 600; font-size: 13px; }
+        .status-options {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            display: none;
+            gap: 4px;
+            padding: 6px;
+            border: 1px solid #dbeafe;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 10px 24px rgba(31, 45, 61, .14);
+            z-index: 99;
+        }
+        .status-options.show { display: grid; }
+        .status-option {
+            display: grid;
+            gap: 2px;
+            width: 100%;
+            padding: 10px;
+            border: 0;
+            border-radius: 7px;
+            background: #fff;
+            color: #1f2937;
+            text-align: left;
+            cursor: pointer;
+        }
+        .status-option:hover, .status-option:focus { background: #eff6ff; outline: none; }
         .status-help {
             margin-top: 9px;
             color: #64748b;
@@ -637,14 +728,24 @@
             <fieldset class="form-section order-status-section">
                 <legend class="section-title">Perbarui status pesanan</legend>
                 <p class="order-status-intro">Pilih tindakan yang sesuai untuk memperbarui status pesanan Anda.</p>
-                <div class="status-select-wrap">
+                    <div class="status-select-wrap">
                     <label class="sr-only" for="cod_status">Pilih status pesanan</label>
-                    <select class="status-select" id="cod_status" name="cod_status" required>
+                    <select class="status-select-hidden" id="cod_status" name="cod_status" required>
                         <option value="" selected disabled>Pilih status pesanan</option>
                         <option value="KONFIRMASI PESANAN">Konfirmasi Pesanan</option>
                         <option value="KONFIRMASI PEMBAYARAN">Konfirmasi Pembayaran</option>
                         <option value="BATALKAN PESANAN">Batalkan Pesanan</option>
                     </select>
+                    <div class="status-dropdown" id="statusDropdown">
+                        <button class="status-dropdown-trigger" id="statusDropdownTrigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="status-current placeholder">Pilih status pesanan</span>
+                        </button>
+                        <div class="status-options" id="statusOptions" role="listbox" aria-label="Pilihan status pesanan">
+                            <button class="status-option" type="button" role="option" data-value="KONFIRMASI PESANAN"><strong>Konfirmasi Pesanan</strong><small>Setelah dikonfirmasi, status pesanan akan tampil di email yang terdaftar di aplikasi.</small></button>
+                            <button class="status-option" type="button" role="option" data-value="KONFIRMASI PEMBAYARAN"><strong>Konfirmasi Pembayaran</strong><small>Tahap ini sementara tidak tersedia kecuali setelah proses pengiriman selesai di cek.</small></button>
+                            <button class="status-option" type="button" role="option" data-value="BATALKAN PESANAN"><strong>Batalkan Pesanan</strong><small>Pembatalan memerlukan proses validasi pesanan terlebih dahulu sebelum dapat dibatalkan sepihak.</small></button>
+                        </div>
+                    </div>
                     <p class="status-help">Pilih satu status untuk melanjutkan proses pesanan.</p>
                 </div>
             </fieldset>
@@ -731,10 +832,39 @@
         document.getElementById('dropdownOptions').classList.remove('show');
     }
 
+    // Dropdown status pesanan dengan deskripsi singkat yang tetap terlihat.
+    const statusTrigger = document.getElementById('statusDropdownTrigger');
+    const statusOptions = document.getElementById('statusOptions');
+    const statusSelect = document.getElementById('cod_status');
+    const statusCurrent = statusTrigger?.querySelector('.status-current');
+
+    function toggleStatusDropdown() {
+        const isOpen = statusOptions.classList.toggle('show');
+        statusTrigger.setAttribute('aria-expanded', String(isOpen));
+    }
+
+    statusTrigger?.addEventListener('click', toggleStatusDropdown);
+    document.querySelectorAll('.status-option').forEach((option) => {
+        option.addEventListener('click', () => {
+            const value = option.dataset.value;
+            const title = option.querySelector('strong').textContent;
+            const description = option.querySelector('small').textContent;
+            statusSelect.value = value;
+            statusCurrent.classList.remove('placeholder');
+            statusCurrent.innerHTML = `<strong>${title}</strong><small>${description}</small>`;
+            statusOptions.classList.remove('show');
+            statusTrigger.setAttribute('aria-expanded', 'false');
+        });
+    });
+
     // Menutup dropdown jika klik di luar area
     window.onclick = function(event) {
         if (!event.target.closest('#courierDropdown')) {
             document.getElementById('dropdownOptions').classList.remove('show');
+        }
+        if (!event.target.closest('#statusDropdown')) {
+            statusOptions?.classList.remove('show');
+            statusTrigger?.setAttribute('aria-expanded', 'false');
         }
     }
 
