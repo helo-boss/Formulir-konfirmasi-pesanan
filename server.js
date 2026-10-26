@@ -41,17 +41,21 @@ const server = http.createServer(async (req, res) => {
         ['File Bukti Transfer', data.bukti_tf_nama],
       ].filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== '')
 
-      const text = ['Konfirmasi Pesanan Baru', '', ...fields.map(([label, value]) => `${label}: ${String(value).trim()}`)].join('\\n')
+      const text = ['Konfirmasi Pesanan Baru', '', ...fields.map(([label, value]) => `${label}: ${String(value).trim()}`)].join('\n')
       const telegramResponse = await fetch(`https://api.telegram.org/bot${encodeURIComponent(token)}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ chat_id: chatId, text }),
       })
-      if (!telegramResponse.ok) throw new Error('Telegram menolak pesan')
+      const telegramResult = await telegramResponse.json().catch(() => ({}))
+      if (!telegramResponse.ok || !telegramResult.ok) {
+        const description = telegramResult.description || 'Telegram menolak pesan'
+        throw new Error(description)
+      }
       return sendJson(res, 200, { ok: true })
     } catch (error) {
       console.error('Telegram send failed:', error.message)
-      return sendJson(res, 400, { error: 'Pesan Telegram gagal dikirim.' })
+      return sendJson(res, 400, { error: error.message || 'Pesan Telegram gagal dikirim.' })
     }
   }
 
