@@ -24,9 +24,13 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'POST' && req.url === '/api/telegram') {
     try {
       const data = await readJson(req)
-      const token = process.env.TELEGRAM_BOT_TOKEN
-      const chatId = process.env.TELEGRAM_CHAT_ID
+      const rawToken = process.env.TELEGRAM_BOT_TOKEN?.trim()
+      const chatId = process.env.TELEGRAM_CHAT_ID?.trim()
+      const token = rawToken?.replace(/^bot/i, '')
       if (!token || !chatId) return sendJson(res, 500, { error: 'Konfigurasi Telegram belum tersedia.' })
+      if (!/^\d+:[A-Za-z0-9_-]+$/.test(token)) {
+        return sendJson(res, 500, { error: 'Format TELEGRAM_BOT_TOKEN tidak valid.' })
+      }
 
       const fields = [
         ['Nama', data.nama],
