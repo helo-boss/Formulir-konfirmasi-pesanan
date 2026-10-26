@@ -188,10 +188,58 @@
             border-color: #dbeafe;
             background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
         }
+        .cod-accordion {
+            overflow: hidden;
+            border: 1px solid #dbeafe;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, .06);
+        }
+        .cod-accordion summary {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px;
+            color: #1e3a8a;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            list-style: none;
+        }
+        .cod-accordion summary::-webkit-details-marker { display: none; }
+        .cod-accordion summary::after {
+            content: "⌄";
+            margin-left: auto;
+            color: #2563eb;
+            font-size: 18px;
+            line-height: 1;
+            transition: transform .25s ease;
+        }
+        .cod-accordion[open] summary { border-bottom: 1px solid #e5efff; }
+        .cod-accordion[open] summary::after { transform: rotate(180deg); }
+        .cod-warning-icon {
+            display: grid;
+            place-items: center;
+            width: 30px;
+            height: 30px;
+            flex: 0 0 30px;
+            border-radius: 9px;
+            background: #fff3cd;
+            font-size: 17px;
+        }
+        .cod-notes {
+            display: grid;
+            gap: 10px;
+            padding: 13px;
+            color: #475569;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+        .cod-notes p { margin: 0; }
+        .cod-notes strong { display: block; color: #334155; font-size: 11px; }
         .cod-consent-option {
             display: flex;
             align-items: center;
-            justify-content: space-between;
             gap: 12px;
             padding: 12px;
             border: 1px solid #e9ecef;
@@ -200,58 +248,13 @@
             cursor: pointer;
             transition: border-color .2s, background .2s, box-shadow .2s;
         }
-        .cod-consent-option:has(input:checked) {
-            border-color: #b7dfc2;
-            background: #f1fbf3;
-        }
-        .cod-consent-option input {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            opacity: 0;
-            pointer-events: none;
-        }
-        .cod-consent-icon {
-            display: grid;
-            place-items: center;
-            width: 34px;
-            height: 34px;
-            flex: 0 0 34px;
-            border-radius: 9px;
-            background: #fff3cd;
-            color: #b7791f;
-        }
-        .cod-consent-icon svg { width: 19px; height: 19px; }
+        .cod-consent-option:has(input:checked) { border-color: #b7dfc2; background: #f1fbf3; }
+        .cod-consent-option input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
         .cod-consent-copy { display: grid; gap: 3px; min-width: 0; flex: 1; }
         .cod-consent-copy strong { color: #444; font-size: 13px; line-height: 1.3; }
-        .cod-consent-copy small { color: #666; font-size: 11px; line-height: 1.45; }
-        .cod-consent-check { display: none; }
-        .cod-switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 28px;
-            flex: 0 0 50px;
-        }
-        .cod-switch-slider {
-            position: absolute;
-            inset: 0;
-            background: #ccc;
-            border-radius: 34px;
-            transition: .25s;
-        }
-        .cod-switch-slider::before {
-            position: absolute;
-            content: "";
-            width: 20px;
-            height: 20px;
-            left: 4px;
-            bottom: 4px;
-            background: #fff;
-            border-radius: 50%;
-            transition: .25s;
-            box-shadow: 0 1px 3px rgba(0,0,0,.15);
-        }
+        .cod-switch { position: relative; display: inline-block; width: 50px; height: 28px; flex: 0 0 50px; }
+        .cod-switch-slider { position: absolute; inset: 0; background: #ccc; border-radius: 34px; transition: .25s; }
+        .cod-switch-slider::before { position: absolute; content: ""; width: 20px; height: 20px; left: 4px; bottom: 4px; background: #fff; border-radius: 50%; transition: .25s; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
         .cod-consent-option:has(input:checked) .cod-switch-slider { background: #34c759; }
         .cod-consent-option:has(input:checked) .cod-switch-slider::before { transform: translateX(22px); }
   
@@ -696,22 +699,22 @@
             </fieldset>
 
             <!-- Layanan COD CEK DULU dipindahkan ke bagian paling bawah -->
-            <fieldset class="form-section cod-consent-section">
-                <legend class="section-title">Layanan Pembayaran COD CEK DULU</legend>
-                <label class="cod-consent-option" for="codSwitch">
-                    <input type="checkbox" id="codSwitch" name="cod_consent" value="COD CEK DULU" required>
-                    <span class="cod-consent-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M7 12h10M12 8v8" stroke-linecap="round"/></svg>
-                    </span>
-                    <span class="cod-consent-copy">
-                        <strong>Setujui layanan COD CEK DULU</strong>
-                        <small>Dengan mencentang pilihan ini, Anda menyetujui proses pengecekan barang terlebih dahulu sebelum pembayaran.</small>
-                    </span>
-                                <span class="cod-switch" aria-hidden="true">
-                                    <span class="cod-switch-slider"></span>
-                                </span>
-                </label>
-            </fieldset>
+  <fieldset class="form-section cod-consent-section">
+  <legend class="section-title">Layanan Pembayaran COD CEK DULU</legend>
+  <details class="cod-accordion">
+  <summary><span class="cod-warning-icon" aria-hidden="true">⚠️</span><span>CATATAN PENTING WAJIB DIPENUHI</span></summary>
+  <div class="cod-notes">
+  <p><strong>Siapkan Saldo Aplikasi:</strong> Penerima pesanan wajib memiliki saldo yang cukup di Aplikasi Penyedia Layanan Pembayaran (PPOB).</p>
+  <p><strong>Tujuan Keamanan:</strong> Kebijakan ini mutlak dijalankan demi menciptakan transaksi jual-beli yang aman, transparan, dan nyaman bagi kedua belah pihak.</p>
+  <p><strong>Anti Orderan Palsu:</strong> Aturan ini dirancang khusus untuk memproteksi layanan dan menghindari oknum pelaku orderan fiktif (FAKE Order).</p>
+  <label class="cod-consent-option" for="codSwitch">
+  <input type="checkbox" id="codSwitch" name="cod_consent" value="COD CEK DULU" required>
+  <span class="cod-consent-copy"><strong>Setujui layanan COD CEK DULU</strong><small>Saya telah membaca dan menyetujui catatan penting di atas.</small></span>
+  <span class="cod-switch" aria-hidden="true"><span class="cod-switch-slider"></span></span>
+  </label>
+  </div>
+  </details>
+  </fieldset>
 
             <!-- Persetujuan dan tombol tetap melekat di bagian bawah layar -->
             <div class="app-footer">
