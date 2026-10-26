@@ -112,6 +112,79 @@
             background-color: #fff;
         }
         
+        /* Pilihan status pesanan */
+        .order-status-section {
+            border-color: #dbeafe;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        }
+        .order-status-intro {
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.5;
+            margin: -6px 0 14px;
+        }
+        .status-options {
+            display: grid;
+            gap: 10px;
+        }
+        .status-option {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 13px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: #fff;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+        }
+        .status-option:hover,
+        .status-option:has(input:checked) {
+            border-color: #007aff;
+            background: #f5f9ff;
+            box-shadow: 0 3px 10px rgba(0, 122, 255, 0.08);
+        }
+        .status-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .status-icon {
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            display: grid;
+            place-items: center;
+            border-radius: 9px;
+            background: #eaf3ff;
+            color: #007aff;
+        }
+        .status-icon svg { width: 19px; height: 19px; }
+        .status-copy { min-width: 0; }
+        .status-name {
+            display: block;
+            color: #1f2937;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        .status-description {
+            display: block;
+            margin-top: 4px;
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.45;
+        }
+        .status-check {
+            margin-left: auto;
+            color: #007aff;
+            opacity: 0;
+            font-size: 18px;
+            line-height: 1;
+        }
+        .status-option:has(input:checked) .status-check { opacity: 1; }
+
         /* Custom Dropdown Kurir */
         .custom-dropdown {
             position: relative;
@@ -514,21 +587,7 @@
                 </div>
             </div>
 
-            <!-- SEKSI 3: STATUS PESANAN -->
-            <div class="form-section">
-                <div class="section-title">Status Pesanan</div>
-                <div class="form-group">
-                    <label for="cod_status">Pilih Status Pesanan:</label>
-                    <select id="cod_status" name="cod_status" required>
-                        <option value="">-- Pilih Status Pesanan --</option>
-                        <option value="KONFIRMASI PESANAN">KONFIRMASI PESANAN</option>
-                        <option value="KONFIRMASI PEMBAYARAN">KONFIRMASI PEMBAYARAN</option>
-                        <option value="BATALKAN PESANAN">BATALKAN PESANAN</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- SEKSI 4: METODE PEMBAYARAN -->
+            <!-- SEKSI 3: METODE PEMBAYARAN -->
             <div class="form-section">
                 <div class="section-title">Metode Pembayaran</div>
                 <div class="form-group">
@@ -555,6 +614,47 @@
                     </div>
                 </div>
             </div>
+
+            <!-- SEKSI 4: STATUS PESANAN -->
+            <fieldset class="form-section order-status-section">
+                <legend class="section-title">Perbarui status pesanan</legend>
+                <p class="order-status-intro">Pilih tindakan yang sesuai untuk memperbarui status pesanan Anda.</p>
+                <div class="status-options">
+                    <label class="status-option">
+                        <input type="radio" name="cod_status" value="KONFIRMASI PESANAN" required>
+                        <span class="status-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12.5 9.2 17 19 7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4h16v16H4z" stroke-linejoin="round"/></svg>
+                        </span>
+                        <span class="status-copy">
+                            <span class="status-name">Konfirmasi Pesanan</span>
+                            <span class="status-description">Setelah dikonfirmasi pesanan status pesanan Anda akan tampil di email yang terdaftar di aplikasi.</span>
+                        </span>
+                        <span class="status-check" aria-hidden="true">✓</span>
+                    </label>
+                    <label class="status-option">
+                        <input type="radio" name="cod_status" value="KONFIRMASI PEMBAYARAN">
+                        <span class="status-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3" stroke-linecap="round"/></svg>
+                        </span>
+                        <span class="status-copy">
+                            <span class="status-name">Konfirmasi Pembayaran</span>
+                            <span class="status-description">Tahap ini sementara tidak tersedia kecuali setelah proses pengiriman selesai di cek.</span>
+                        </span>
+                        <span class="status-check" aria-hidden="true">✓</span>
+                    </label>
+                    <label class="status-option">
+                        <input type="radio" name="cod_status" value="BATALKAN PESANAN">
+                        <span class="status-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="m9 9 6 6M15 9l-6 6" stroke-linecap="round"/></svg>
+                        </span>
+                        <span class="status-copy">
+                            <span class="status-name">Batalkan Pesanan</span>
+                            <span class="status-description">Proses pembatalan pesanan ini memerlukan proses validasi pesanan terlebih dahulu baru bisa dibatalkan sepihak.</span>
+                        </span>
+                        <span class="status-check" aria-hidden="true">✓</span>
+                    </label>
+                </div>
+            </fieldset>
 
             <!-- Persetujuan dan tombol tetap melekat di bagian bawah layar -->
             <div class="app-footer">
