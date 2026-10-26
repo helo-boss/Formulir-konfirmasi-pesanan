@@ -1008,6 +1008,12 @@
             params.bukti_tf_ukuran = proofFile ? `${Math.ceil(proofFile.size / 1024)} KB` : '-';
 
             await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
+            const telegramResponse = await fetch('/api/telegram', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(params)
+            });
+            if (!telegramResponse.ok) throw new Error('Telegram send failed');
             document.getElementById('emailStep').style.display = 'none';
             document.getElementById('successStep').style.display = 'block';
             document.getElementById('modalIcon').innerHTML = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#e6f8ee"/><path d="m7 12.5 3.2 3.2L17.5 8" stroke="#16834a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
