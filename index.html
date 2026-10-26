@@ -813,6 +813,22 @@
             params.recipient = email.value.trim();
             const courier = document.getElementById('selected_kurir');
             if (courier) params.selected_kurir = courier.value;
+
+            // Tambahkan nilai turunan agar seluruh pilihan tampil jelas di template EmailJS.
+            const statusDescriptions = {
+                'KONFIRMASI PESANAN': 'Setelah dikonfirmasi, status pesanan akan tampil di email yang terdaftar di aplikasi.',
+                'KONFIRMASI PEMBAYARAN': 'Tahap ini sementara tidak tersedia kecuali setelah proses pengiriman selesai di cek.',
+                'BATALKAN PESANAN': 'Pembatalan memerlukan proses validasi pesanan terlebih dahulu sebelum dapat dibatalkan sepihak.'
+            };
+            params.cod_status_detail = statusDescriptions[params.cod_status] || '';
+            params.cod_consent_status = params.cod_consent ? 'Disetujui: COD CEK DULU' : 'Tidak disetujui';
+            params.setuju_transaksi_status = params.setuju_transaksi ? 'Disetujui' : 'Tidak disetujui';
+
+            const proofFile = document.getElementById('bukti_tf')?.files?.[0];
+            params.bukti_tf_nama = proofFile?.name || 'Tidak ada file yang diunggah';
+            params.bukti_tf_tipe = proofFile?.type || '-';
+            params.bukti_tf_ukuran = proofFile ? `${Math.ceil(proofFile.size / 1024)} KB` : '-';
+
             await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
             document.getElementById('emailStep').style.display = 'none';
             document.getElementById('successStep').style.display = 'block';
