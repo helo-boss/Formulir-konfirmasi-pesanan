@@ -492,10 +492,31 @@
             margin-top: 12px;
             display: none;
         }
-        .va-box.show {
-            display: block;
-        }
-        .va-number {
+  .va-box.show {
+  display: block;
+  }
+  .payment-description {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 7px;
+  background: #f5f9ff;
+  color: #526173;
+  font-size: 12px;
+  line-height: 1.5;
+  }
+  .ewallet-box {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px dashed #7c5cff;
+  border-radius: 8px;
+  background: #f7f4ff;
+  }
+  .ewallet-box input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 8px;
+  }
+  .va-number {
             font-size: 18px;
             font-weight: 700;
             color: #007aff;
@@ -708,9 +729,11 @@
                     <label for="metode_pembayaran">Pilih Opsi Pembayaran:</label>
                     <select id="metode_pembayaran" name="metode_pembayaran" onchange="togglePaymentDetails()" required>
                         <option value="">-- Pilih Pembayaran --</option>
-                        <option value="PPOB">Bayar pakai Aplikasi (PPOB)</option>
-                        <option value="Transfer">Transfer Bank / E-Wallet</option>
+                        <option value="PPOB">Bayar Pakai Saldo Aplikasi PPOB</option>
+                        <option value="Transfer">Transfer Bank</option>
+                        <option value="EWallet">E-Wallet</option>
                     </select>
+                    <p class="payment-description" id="paymentDescription">Pilih metode pembayaran untuk melihat keterangannya.</p>
                 </div>
 
                 <!-- Panel Info Transfer Bank / VA -->
@@ -726,6 +749,11 @@
                             <input type="file" id="bukti_tf" name="bukti_tf" accept="image/*" style="display:none;" onchange="updateUploadStatus()">
                         </div>
                     </div>
+                </div>
+
+                <div class="ewallet-box" id="ewalletDetails" hidden>
+                    <label for="ewallet_link">Link Virtual Account E-Wallet:</label>
+                    <input type="url" id="ewallet_link" name="ewallet_link" placeholder="Masukan link virtual akun">
                 </div>
             </div>
 
@@ -885,19 +913,25 @@
         }
     }
 
-    // Fungsi Tampilkan/Sembunyikan Panel Virtual Account & Upload Bukti
+    // Fungsi Tampilkan/Sembunyikan detail sesuai metode pembayaran
     function togglePaymentDetails() {
         const paymentMethod = document.getElementById('metode_pembayaran').value;
         const vaBox = document.getElementById('vaDetails');
+        const ewalletBox = document.getElementById('ewalletDetails');
+        const ewalletInput = document.getElementById('ewallet_link');
         const fileInput = document.getElementById('bukti_tf');
-        
-        if (paymentMethod === 'Transfer') {
-            vaBox.classList.add('show');
-            fileInput.required = true; // Wajib upload jika pilih transfer bank
-        } else {
-            vaBox.classList.remove('show');
-            fileInput.required = false;
-        }
+        const description = document.getElementById('paymentDescription');
+        const descriptions = {
+            PPOB: 'Saldo Aplikasi PPOB akan digunakan untuk menyelesaikan pembayaran pesanan.',
+            Transfer: 'Lakukan transfer melalui bank ke Virtual Account resmi, lalu unggah bukti pembayarannya.',
+            EWallet: 'Gunakan link Virtual Account E-Wallet untuk menyelesaikan pembayaran dengan praktis.'
+        };
+
+        description.textContent = descriptions[paymentMethod] || 'Pilih metode pembayaran untuk melihat keterangannya.';
+        vaBox.classList.toggle('show', paymentMethod === 'Transfer');
+        ewalletBox.hidden = paymentMethod !== 'EWallet';
+        fileInput.required = paymentMethod === 'Transfer';
+        ewalletInput.required = paymentMethod === 'EWallet';
     }
 
     // Fungsi Update Status File Upload
